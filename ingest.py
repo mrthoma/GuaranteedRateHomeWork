@@ -15,7 +15,7 @@ from operator import itemgetter
 ###################################################
 #VARIABLES
 ###################################################
-userfile  = sys.argv[-1]
+userfile    = sys.argv[-1]
 
 ###################################################
 #FUNCTIONS
@@ -27,49 +27,43 @@ def check_arguments():
 
 
 def ingest_input():
-	global      people
-	global      iteration
-	global 		tlist
-	iteration = 0
-	people    = {}
-	tlist     = []
+	global 		plist
+	global		flist
+	plist     = []
+	flist     = []
 
 	with open(userfile) as opened:
 		for line in opened:
 
-			iteration += 1
-			fields    = re.split(r'[ ,|"]+', line)
+			try:
+				fields    = re.split(r'[ ,|"]+', line.replace('\n', ''))
+				LastName  = fields[0]
+				FirstName = fields[1]
+				Gender    = fields[2]
+				FavColor  = fields[3]
+				DOB       = fields[4]
+				plist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOB, "favcolor": FavColor, "gender": Gender})
 
-			LastName  = fields[0]
-			FirstName = fields[1]
-			Gender    = fields[2]
-			FavColor  = fields[3]
-			DOB       = fields[4]
-	
-			# people[iteration] = {}
-			# people[iteration]['lastname' ] = LastName
-			# people[iteration]['firstname'] = FirstName
-			# people[iteration]['gender'   ] = Gender
-			# people[iteration]['favcolor' ] = FavColor
-			# people[iteration]['dob'      ] = DOB
+			except:
+				flist.append(line.replace('\n', ''))
 
-			tlist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOB, "favcolor": FavColor, "gender": Gender})
+def print_output():
+	print("ORDERED BY GENDER AND LAST NAME")
+	pprint(sorted(plist, key=itemgetter('gender', 'lastname')))
 
 
+	print("ORDERED BY DOB")
+	pprint(sorted(plist, key=itemgetter('dob')))
 
+
+	print("REVERSE ORDERED LAST NAME")
+	pprint(sorted(plist, key=itemgetter('lastname'),reverse = True))
+
+	print("FAILED RECORDS")
+	pprint(flist)
 ###################################################
 #CALLS
 ###################################################
 check_arguments()
 ingest_input()
-
-print("ORDERED BY GENDER AND LAST NAME")
-pprint(sorted(tlist, key=itemgetter('gender', 'lastname')))
-
-
-print("ORDERED BY DOB")
-pprint(sorted(tlist, key=itemgetter('dob')))
-
-
-print("REVERSE ORDERED LAST NAME")
-pprint(sorted(tlist, key=itemgetter('lastname'),reverse = True))
+print_output()
