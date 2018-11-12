@@ -8,12 +8,14 @@
 ###################################################
 import sys
 import re
-import csv
+import json
+from pprint import pprint
+from operator import itemgetter
 
 ###################################################
 #VARIABLES
 ###################################################
-userfile      = sys.argv[-1]
+userfile  = sys.argv[-1]
 
 ###################################################
 #FUNCTIONS
@@ -24,24 +26,50 @@ def check_arguments():
 		exit(1)
 
 
-def print_output():
+def ingest_input():
+	global      people
+	global      iteration
+	global 		tlist
+	iteration = 0
+	people    = {}
+	tlist     = []
+
 	with open(userfile) as opened:
 		for line in opened:
+
+			iteration += 1
 			fields    = re.split(r'[ ,|"]+', line)
-			print(fields)
+
 			LastName  = fields[0]
 			FirstName = fields[1]
 			Gender    = fields[2]
-			DOB       = fields[3]
+			FavColor  = fields[3]
+			DOB       = fields[4]
 	
-			print("Last Name Is "  + LastName )
-			print("First Name Is " + FirstName)
-			print("Gender Is "     + Gender   )  
-			print("DOB Is "        + DOB      )
+			# people[iteration] = {}
+			# people[iteration]['lastname' ] = LastName
+			# people[iteration]['firstname'] = FirstName
+			# people[iteration]['gender'   ] = Gender
+			# people[iteration]['favcolor' ] = FavColor
+			# people[iteration]['dob'      ] = DOB
+
+			tlist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOB, "favcolor": FavColor, "gender": Gender})
+
 
 
 ###################################################
 #CALLS
 ###################################################
 check_arguments()
-print_output()
+ingest_input()
+
+print("ORDERED BY GENDER AND LAST NAME")
+pprint(sorted(tlist, key=itemgetter('gender', 'lastname')))
+
+
+print("ORDERED BY DOB")
+pprint(sorted(tlist, key=itemgetter('dob')))
+
+
+print("REVERSE ORDERED LAST NAME")
+pprint(sorted(tlist, key=itemgetter('lastname'),reverse = True))
