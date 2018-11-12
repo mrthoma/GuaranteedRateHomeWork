@@ -49,18 +49,22 @@ def ingest_input():
 
 def print_output():
 	print("ORDERED BY GENDER AND LAST NAME")
-	pprint(sorted(plist, key=itemgetter('gender', 'lastname')))
+	print(json.dumps(sorted(plist, key=itemgetter('gender', 'lastname'))))
 
 
 	print("ORDERED BY DOB")
-	pprint(sorted(plist, key=itemgetter('dob')))
+	print(json.dumps(sorted(plist, key=itemgetter('dob'))))
 
 
 	print("REVERSE ORDERED LAST NAME")
-	pprint(sorted(plist, key=itemgetter('lastname'),reverse = True))
+	print(json.dumps(sorted(plist, key=itemgetter('lastname'),reverse = True)))
+
 
 	print("FAILED RECORDS")
 	pprint(flist)
+
+
+
 ###################################################
 #CALLS
 ###################################################
