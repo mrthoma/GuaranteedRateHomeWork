@@ -9,93 +9,75 @@
 #3 ALL RECORD PROCESSING FAILED
 #4 NO RECORDS DETECTED
 ###################################################
-###################################################
 #REQUIREMENTS
 ###################################################
-import sys
-import re
-import json
-from pprint import pprint
-from operator import itemgetter
+import     sys
+import     json
+from       processdata import process_input, get_order_dob, get_order_gender, get_order_reverse_lastname, get_recordcount, get_failcount, get_flist
+userfile = sys.argv[-1]
 
-###################################################
-#VARIABLES
-###################################################
-global 		  plist
-global		  flist
-userfile    = sys.argv[-1]
-#people list
-plist       = []
-#failure list
-flist       = []
-
-###################################################
-#FUNCTIONS
-###################################################
+#Functions
 def check_arguments():
+	#check if filename was passed
 	if len(sys.argv) < 2:
 		print("PLEASE PASS A FILE NAME... EXAMPLE: 'ingest.py test.csv'")
 		exit(2)
 
 
-def ingest_input():
+def ingest_file():
 	with open(userfile) as opened:
 		for line in opened:
-
+			#don't want to error on a line
 			try:
-				fields    = re.split(r'[ ,|"]+', line.replace('\n', ''))
-				LastName  = fields[0]
-				FirstName = fields[1]
-				Gender    = fields[2]
-				FavColor  = fields[3]
-				DOB       = fields[4]
-				plist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOB, "favcolor": FavColor, "gender": Gender})
-
+				process_input(line)
 			except:
-				flist.append(line.replace('\n', ''))
+			#failed records being recorded... so let's pass the ex
+				pass
 
 def print_output():
 
-	#if only people list is populated...
-	if plist:
+	recordcount = get_recordcount()
+	failcount   = get_failcount()
 
-		print("ORDERED BY GENDER AND LAST NAME")
-		print(json.dumps(sorted(plist, key=itemgetter('gender', 'lastname'))))
+	#if records successfully populated...
+	if recordcount > 0:
+
+		print("ORDERED BY GENDER AND LAST NAME:")
+		print(json.dumps(get_order_gender()))
 
 
-		print("ORDERED BY DOB")
-		print(json.dumps(sorted(plist, key=itemgetter('dob'))))
+		print("ORDERED BY DOB:")
+		print(json.dumps(get_order_dob()))
 
 
-		print("REVERSE ORDERED LAST NAME")
-		print(json.dumps(sorted(plist, key=itemgetter('lastname'),reverse = True)))
+		print("REVERSE ORDERED LAST NAME:")
+		print(json.dumps(get_order_reverse_lastname()))
+
 
 		#and print failures if we have any
-		if flist:
+		if failcount > 0:
 			print("FAILED RECORDS")
-			print(flist)
+			print(get_flist())
 		#that's all folks
 		exit(0)
 
-	#otherwise if people list is empty and failure list is populated
-	elif not plist and flist:
+	#otherwise if recor list is empty and failure list is populated
+	elif recordcount == 0 and failcount > 0:
 		print("ALL RECORDS FAILED")
-		print(flist)
+		print(get_flist())
 		exit(3)
 
-	#otherwise if no people list and no failure list
-	elif not flist and not plist:
+	#otherwise if no record list and no failure list
+	elif recordcount == 0 and failcount == 0:
 		print("NO RECORDS DETECTED")
 		exit(4)
 
-	#otherwise something else failed
+	#otherwise something else failed?
 	else:
 		print("SCRIPT FAILED UKNOWN ERROR...")
 		exit(1)
 
-###################################################
-#CALLS
-###################################################
+#Calls
 check_arguments()
-ingest_input()
+ingest_file()
 print_output()
