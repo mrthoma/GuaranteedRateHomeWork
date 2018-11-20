@@ -8,17 +8,18 @@ from   collections import OrderedDict
 flist = []
 plist = []
 
-
-
 def process_input(line):
 
 	try:
-		#check if the fields are good
-		fields = re.split(r'[ ,|]+', line.replace('\n', ''))
+		#check if using the proper delimiter
+		fields     = re.split(r'[ ,|]+', line.replace('\n', ''))
+		#check if date is in the right format
+		dateformat = str(datetime.strptime(fields[4],'%m/%d/%Y').date())
 	except:
-		#if not good: put it on the flist
+		#if failed, put it on the flist for the user to review
 		flist.append(line.replace('\n', ''))
-		
+
+
 	if len(fields) > 5:
 		flist.append(line.replace('\n', ''))
 		raise ValueError("TOO MANY FIELDS")
@@ -28,15 +29,14 @@ def process_input(line):
 		raise ValueError("NOT ENOUGH FIELDS")
 
 	else:
+		#Get the rest of the fields in there
 		LastName  = fields[0]
 		FirstName = fields[1]
 		Gender    = fields[2]
 		FavColor  = fields[3]
-		DOB       = fields[4]
-		DOBSTRIP  = str(datetime.strptime(DOB,'%d/%m/%Y').date())
+		DOB       = dateformat
 
-
-		plist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOBSTRIP, "favcolor": FavColor, "gender": Gender})
+		plist.append({"lastname": LastName, "firstname": FirstName,  "dob": DOB, "favcolor": FavColor, "gender": Gender})
 
 		return(plist,flist)
 
@@ -45,8 +45,6 @@ def get_order_gender():
 
 def get_order_dob():
 	return (sorted(plist, key=itemgetter('dob')))
-	#plist.sort(key=lambda item:item[datetime.strptime('dob', '%d/%m/%Y').date()])
-	#return(plist)
 
 def get_order_reverse_lastname():
 	return (sorted(plist, key=itemgetter('lastname'),reverse = True))

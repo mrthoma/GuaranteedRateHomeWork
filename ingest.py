@@ -1,16 +1,4 @@
-#!/bin/python3
-###################################################
-#Guaranteed Rate Dev Homework
-#Mike Thoma 11/11/2018
-###################################################
-#EXIT CODES
-#1 UNSPECIFIED/GENERAL FAILURE
-#2 NO ARGUMENT GIVEN
-#3 ALL RECORD PROCESSING FAILED
-#4 NO RECORDS DETECTED
-###################################################
-#REQUIREMENTS
-###################################################
+
 import     sys
 import     json
 from       processdata import process_input, get_order_dob, get_order_gender, get_order_reverse_lastname, get_recordcount, get_failcount, get_flist
@@ -27,7 +15,7 @@ def check_arguments():
 def ingest_file():
 	with open(userfile) as opened:
 		for line in opened:
-			#don't want to error on a line
+			# #don't want to error on a line
 			try:
 				process_input(line)
 			except:
@@ -43,15 +31,15 @@ def print_output():
 	if recordcount > 0:
 
 		print("ORDERED BY GENDER AND LAST NAME:")
-		print(json.dumps(get_order_gender()))
+		print(json.dumps(get_order_gender(), indent=4))
 
 
 		print("ORDERED BY DOB:")
-		print(json.dumps(get_order_dob()))
+		print(json.dumps(get_order_dob(), indent=4))
 
 
 		print("REVERSE ORDERED LAST NAME:")
-		print(json.dumps(get_order_reverse_lastname()))
+		print(json.dumps(get_order_reverse_lastname(), indent=4))
 
 
 		#and print failures if we have any
