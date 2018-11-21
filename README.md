@@ -65,3 +65,11 @@ rest_ingest.py and start.sh
 
 		To GET records sorted by Birthdate:
 			curl 127.0.0.1/records/birthdate
+
+test_processdata.py
+
+	Description:
+		Initial Unit Testing
+
+	Usage:
+		python -m unittest -v test_processdata.py
